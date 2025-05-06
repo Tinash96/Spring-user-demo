@@ -60,3 +60,4 @@ src/main/resources/application.properties
 ### Tests ###
 test-output/
 target/
+"HELP.md" 
