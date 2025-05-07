@@ -1,27 +1,20 @@
 package com.example.demo.service;
 
-
-
-import com.example.demo.service.UserService;
+import com.example.demo.controller.UserController;
 import com.example.demo.model.User;
+import com.example.demo.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.MockitoAnnotations;
 
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
-public class UserControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class UserControllerTests {
 
     @Mock
     private UserService userService;
@@ -29,54 +22,46 @@ public class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+    private UUID userId;
     private User user;
 
     @BeforeEach
-    public void setup() {
-        user = new User(1L, "John", "Doe");
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        userId = UUID.randomUUID();  // Generate a unique ID for testing
+        user = new User(userId, "Tina", "Smith"); // Mock the User object with an ID
     }
 
     @Test
-    public void testAddUser() throws Exception {
-        // Arrange: mock the service method to avoid calling the real method
-        doNothing().when(userService).addUser(anyString(), anyString());
+    void testAddUser() {
+        // Mock the addUser method in the service
+        when(userService.addUser(anyString(), anyString())).thenReturn(user);
 
-        // Act & Assert: Perform the HTTP request and check the result
-        mockMvc.perform(post("/users")
-                        .param("name", user.getName())
-                        .param("surname", user.getSurname()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(user.getName() + " added"));
+        String response = userController.addUser("Tina", "Smith");
 
-        // Verify that the service method was called
-        verify(userService, times(1)).addUser(user.getName(), user.getSurname());
+        assertNotNull(response);
+        assertTrue(response.contains("User Tina Smith with ID " + userId));
     }
 
     @Test
-    public void testGetUser() throws Exception {
-        // Arrange: mock the service method to return a user
-        when(userService.getUser(anyLong())).thenReturn(user);
+    void testGetUser() {
+        // Mock the getUser method in the service
+        when(userService.getUser(userId)).thenReturn(user);
 
-        // Act & Assert: Perform the HTTP request and check the result
-        mockMvc.perform(get("/users/{id}", user.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Hello " + user.getName()));
+        String response = userController.getUser(userId);
 
-        // Verify that the service method was called
-        verify(userService, times(1)).getUser(user.getId());
+        assertNotNull(response);
+        assertTrue(response.contains("User Tina Smith with ID " + userId.toString()));
     }
 
     @Test
-    public void testRemoveUser() throws Exception {
-        // Arrange: mock the service method to avoid actual deletion
-        doNothing().when(userService).removeUser(anyLong());
+    void testRemoveUser() {
+        // Mock the removeUser method in the service
+        when(userService.removeUser(userId)).thenReturn(true);
 
-        // Act & Assert: Perform the HTTP request and check the result
-        mockMvc.perform(delete("/users/{id}", user.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User removed"));
+        String response = userController.removeUser(userId);
 
-        // Verify that the service method was called
-        verify(userService, times(1)).removeUser(user.getId());
+        assertNotNull(response);
+        assertTrue(response.contains("User with ID " + userId.toString() + " has been removed."));
     }
 }

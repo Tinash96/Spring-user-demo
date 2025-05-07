@@ -1,32 +1,36 @@
 package com.example.demo.service;
 
-import com.example.demo.repo.FakeRepo;
+import com.example.demo.model.User;
+import com.example.demo.repo.FakeRepoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserServiceImpl implements UserService {
-    private final FakeRepo fakeRepo;
 
-    // Constructor Injection
+    private final FakeRepoInterface fakeRepo;
+
     @Autowired
-    public UserServiceImpl(FakeRepo fakeRepo) {
+    public UserServiceImpl(FakeRepoInterface fakeRepo) {
         this.fakeRepo = fakeRepo;
     }
 
     @Override
-    public String addUser(String name, String surname) {
-        long id = (long) (Math.random() * 10000);  // Random id generation
-        return fakeRepo.insertUser(id, name, surname);
+    public User addUser(String name, String surname) {
+        // Generate UUID inside the service method or let the repository do it
+        User user = new User(UUID.randomUUID(), name, surname);  // Create user with UUID
+        return fakeRepo.insertUser(user.getName(), user.getSurname());  // Insert user into repo
     }
 
     @Override
-    public String removeUser(long id) {
-        return fakeRepo.deleteUser(id);
+    public User getUser(UUID id) {
+        return fakeRepo.findUserById(id);  // Find user by UUID
     }
 
     @Override
-    public String getUser(long id) {
-        return fakeRepo.findUserById(id);
+    public boolean removeUser(UUID id) {
+        return fakeRepo.deleteUser(id);  // Delete user by UUID
     }
 }

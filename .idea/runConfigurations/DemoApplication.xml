@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DemoApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.example.demo.DemoApplication" />
+    <module name="demo.main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.demo.*" />

@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.model.User;
+
+import java.util.UUID;
+
 public interface UserService {
-    String addUser(String name, String surname);
-    String removeUser(long id);
-    String getUser(long id);
+    User addUser(String name, String surname);
+    User getUser(UUID id);
+    boolean removeUser(UUID id);
 }

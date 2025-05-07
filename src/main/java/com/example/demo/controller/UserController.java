@@ -5,6 +5,8 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -18,16 +20,23 @@ public class UserController {
 
     @PostMapping
     public String addUser(@RequestParam String name, @RequestParam String surname) {
-        return userService.addUser(name, surname);
+        User user = userService.addUser(name, surname);
+        return "User " + user.getName() + " " + user.getSurname() + " with ID " + user.getId() + " has been added.";
     }
 
     @GetMapping("/{id}")
-    public String getUser(@PathVariable long id) {
-        return userService.getUser(id);
+    public String getUser(@PathVariable UUID id) {
+        User user = userService.getUser(id);
+        return "User " + user.getName() + " " + user.getSurname() + " with ID " + user.getId();
     }
 
     @DeleteMapping("/{id}")
-    public String removeUser(@PathVariable long id) {
-        return userService.removeUser(id);
+    public String removeUser(@PathVariable UUID id) {
+        boolean isDeleted = userService.removeUser(id);
+        if (isDeleted) {
+            return "User with ID " + id + " has been removed.";
+        } else {
+            return "User with ID " + id + " not found.";
+        }
     }
 }

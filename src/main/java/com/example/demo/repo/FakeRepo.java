@@ -1,38 +1,36 @@
 package com.example.demo.repo;
 
 import com.example.demo.model.User;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+@Repository
 public class FakeRepo implements FakeRepoInterface {
-    private List<User> users = new ArrayList<>();
+
+    private Map<UUID, User> userDatabase = new HashMap<>();
 
     @Override
-    public String insertUser(long id, String name, String surname) {
+    public User insertUser(String name, String surname) {
+        UUID id = UUID.randomUUID();  // Generate UUID automatically for the user
         User user = new User(id, name, surname);
-        users.add(user);
-        return name + " added";
+        userDatabase.put(id, user);
+        return user;  // Return the created user
     }
 
     @Override
-    public String findUserById(long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user.getName() + " " + user.getSurname();
-            }
-        }
-        return "User not found";
+    public User findUserById(UUID id) {
+        return userDatabase.get(id);  // Retrieve user by UUID
     }
 
     @Override
-    public String deleteUser(long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                users.remove(user);
-                return user.getName() + " removed";
-            }
+    public boolean deleteUser(UUID id) {
+        if (userDatabase.containsKey(id)) {
+            userDatabase.remove(id);  // Remove user by UUID
+            return true;
         }
-        return "User not found";
+        return false;  // Return false if user not found
     }
 }

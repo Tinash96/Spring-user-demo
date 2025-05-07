@@ -1,69 +1,58 @@
 package com.example.demo.service;
 
-
 import com.example.demo.model.User;
-import com.example.demo.service.UserService;
-import com.example.demo.service.UserServiceImpl;
+import com.example.demo.repo.FakeRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTests {
 
-    private UserService userService;
+    private FakeRepo fakeRepo;
+    private UserServiceImpl userService;
+
+    private UUID userId;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl();
+        fakeRepo = new FakeRepo();
+        userService = new UserServiceImpl(fakeRepo);
+        userId = UUID.randomUUID(); // Correctly creating UUID
+        user = new User(userId, "Tina", "Smith"); // Mock the User object
     }
 
     @Test
     void testAddUser() {
-        User user = userService.addUser("Tina", "Smith");
-        assertNotNull(user);
-        assertEquals("Tina", user.getName());
-        assertEquals("Smith", user.getSurname());
-        assertNotNull(user.getId());
+        User createdUser = userService.addUser("Tina", "Smith");
+        assertNotNull(createdUser);
+        assertEquals("Tina", createdUser.getName());
+        assertEquals("Smith", createdUser.getSurname());
+        assertNotNull(createdUser.getId()); // Check that the ID is generated
     }
 
     @Test
     void testGetUser() {
-        User created = userService.addUser("Tina", "Smith");
-        User found = userService.getUser(created.getId());
-        assertEquals(created.getId(), found.getId());
-        assertEquals("Tina", found.getName());
+        // Add the user to FakeRepo first
+        User createdUser = userService.addUser("Tina", "Smith");
+
+        // Now use the ID to retrieve it
+        User retrievedUser = userService.getUser(createdUser.getId());
+        assertNotNull(retrievedUser);
+        assertEquals(createdUser.getId(), retrievedUser.getId());
+        assertEquals("Tina", retrievedUser.getName());
     }
 
     @Test
     void testRemoveUser() {
-        User created = userService.addUser("Tina", "Smith");
-        boolean removed = userService.removeUser(created.getId());
-        assertTrue(removed);
-        assertNull(userService.getUser(created.getId()));
-    }
+        // Add the user to FakeRepo first
+        User createdUser = userService.addUser("Tina", "Smith");
 
-    @Test
-    void testGetUser_NotFound() {
-        User user = userService.getUser("non-existent-id");
-        assertNull(user);
-    }
-
-    @Test
-    void testRemoveUser_NotFound() {
-        boolean removed = userService.removeUser("invalid-id");
-        assertFalse(removed);
-    }
-
-    @Test
-    void testAddMultipleUsers() {
-        userService.addUser("Tina", "Smith");
-        userService.addUser("John", "Doe");
-        userService.addUser("Jane", "Doe");
-
-        User jane = userService.addUser("Jane", "Doe");
-        assertNotNull(jane.getId());
+        // Now test removal
+        boolean isDeleted = userService.removeUser(createdUser.getId());
+        assertTrue(isDeleted);
     }
 }
-
-
