@@ -3,17 +3,20 @@
 *.jar
 *.war
 *.ear
+
+### Logs ###
 *.log
 
 ### Gradle ###
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
+
+# Prevent including nested build directories unless specifically needed
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-# Ignore Gradle's CLI cache
-.gradle/
+# Gradle CLI cache
 !gradle-wrapper.jar
 
 ### IntelliJ IDEA ###
@@ -51,13 +54,12 @@ bin/
 .DS_Store
 Thumbs.db
 
-### Logs ###
-*.log
-
 ### Application-specific ###
 src/main/resources/application.properties
 
-### Tests ###
+### Test Output ###
 test-output/
 target/
-"HELP.md" 
+
+### Miscellaneous ###
+HELP.md
