@@ -9,73 +9,80 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Implementation of the UserService interface.
+ * Handles business logic for user-related operations using an in-memory repository.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
-    // Dependency Injection: Inject FakeRepoInterface to handle data persistence
     private final FakeRepoInterface fakeRepo;
 
-    // Logger instance to log the actions performed by the service
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    /**
+     * Constructs a new UserServiceImpl with the given FakeRepoInterface.
+     *
+     * @param fakeRepo the repository used for user data operations
+     */
     @Autowired
-    // Constructor to initialize the UserService with the injected FakeRepoInterface
     public UserServiceImpl(FakeRepoInterface fakeRepo) {
         this.fakeRepo = fakeRepo;
     }
 
+    /**
+     * Creates and stores a new user with the given name and surname.
+     *
+     * @param name    the user's first name
+     * @param surname the user's last name
+     * @return the stored User object
+     */
     @Override
-    // Method to add a new user with the provided name and surname
     public User addUser(String name, String surname) {
-        // Create a new User object with a randomly generated UUID and provided name & surname
         User user = new User(UUID.randomUUID(), name, surname);
-
-        // Log the action of adding the user
         logger.info("✅ Adding user: {} {}", name, surname);
 
-        // Insert the created user into the repository and retrieve the added user
         User addedUser = fakeRepo.insertUser(user.getName(), user.getSurname());
-
-        // Log the successful addition of the user
         logger.info("✅ Added user: {} {} with ID {}", name, surname, addedUser.getId());
 
-        // Return the added user object
         return addedUser;
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param id the UUID of the user to retrieve
+     * @return the User object if found, or null otherwise
+     */
     @Override
-    // Method to retrieve a user by their unique ID
     public User getUser(UUID id) {
-        // Find the user from the repository by their UUID
         User user = fakeRepo.findUserById(id);
 
-        // If the user is found, log the details
         if (user != null) {
             logger.info("ℹ️ Retrieved user: {} {} with ID {}", user.getName(), user.getSurname(), id);
         } else {
-            // If the user is not found, log a warning
             logger.warn("⚠️ User with ID {} not found", id);
         }
 
-        // Return the found user or null if not found
         return user;
     }
 
+    /**
+     * Removes a user from the repository using their unique identifier.
+     *
+     * @param id the UUID of the user to remove
+     * @return true if the user was deleted, false if not found
+     */
     @Override
-    // Method to delete a user by their unique ID
     public boolean removeUser(UUID id) {
-        // Attempt to delete the user from the repository
         boolean isDeleted = fakeRepo.deleteUser(id);
 
-        // Log the result of the deletion attempt
         if (isDeleted) {
             logger.info("🗑️ Deleted user with ID {}", id);
         } else {
-            // If no user was found to delete, log a warning
             logger.warn("⚠️ No user found with ID {} to delete", id);
         }
 
-        // Return whether the user was successfully deleted or not
         return isDeleted;
     }
 }

@@ -9,6 +9,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * REST controller that handles HTTP requests for managing users.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -16,11 +19,23 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
+    /**
+     * Constructs a UserController with a provided UserService.
+     *
+     * @param userService the service used for user operations
+     */
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Handles POST requests to add a new user.
+     *
+     * @param name    the user's first name
+     * @param surname the user's last name
+     * @return a success or error message
+     */
     @PostMapping
     public String addUser(@RequestParam String name, @RequestParam String surname) {
         try {
@@ -33,6 +48,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Handles GET requests to retrieve a user by ID.
+     *
+     * @param id the UUID of the user to retrieve
+     * @return user details or an error message
+     */
     @GetMapping("/{id}")
     public String getUser(@PathVariable UUID id) {
         try {
@@ -50,6 +71,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Handles DELETE requests to remove a user by ID.
+     *
+     * @param id the UUID of the user to delete
+     * @return a success or error message
+     */
     @DeleteMapping("/{id}")
     public String removeUser(@PathVariable UUID id) {
         try {
