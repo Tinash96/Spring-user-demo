@@ -1,3 +1,5 @@
+
+
 package com.example.demo.repo;
 
 import com.example.demo.model.User;
@@ -7,17 +9,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+
 @Repository
 public class FakeRepo implements FakeRepoInterface {
 
-    private Map<UUID, User> userDatabase = new HashMap<>();
+    private Map<UUID, User> userDatabase = new HashMap<>();  // In-memory map to store users
 
     @Override
     public User insertUser(String name, String surname) {
-        UUID id = UUID.randomUUID();  // Generate UUID automatically for the user
+        UUID id = UUID.randomUUID();
         User user = new User(id, name, surname);
-        userDatabase.put(id, user);
-        return user;  // Return the created user
+        userDatabase.put(id, user);  // Store the user in the map
+        return user;
     }
 
     @Override
@@ -27,10 +30,8 @@ public class FakeRepo implements FakeRepoInterface {
 
     @Override
     public boolean deleteUser(UUID id) {
-        if (userDatabase.containsKey(id)) {
-            userDatabase.remove(id);  // Remove user by UUID
-            return true;
-        }
-        return false;  // Return false if user not found
+        return userDatabase.remove(id) != null;  // Delete user by UUID
     }
 }
+
+
