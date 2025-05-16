@@ -1,8 +1,9 @@
+
+
 package com.example.demo.service;
 
 import com.example.demo.controller.UserController;
 import com.example.demo.model.User;
-import com.example.demo.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,7 +12,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class UserControllerTests {
@@ -65,3 +67,5 @@ class UserControllerTests {
         assertTrue(response.contains("User with ID " + userId.toString() + " has been removed."));
     }
 }
+
+
